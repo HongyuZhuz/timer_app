@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 import { v4 as uuidv4 } from 'uuid';
+import { newTimer, findById, renderElapsedString } from './helpers.js';
 
 
 const timers=[
@@ -74,10 +75,28 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen})=>{
 }
 
 const Timer=({title,project,id,elapsed,runningSince})=>{
+  const elapsedString = renderElapsedString(elapsed);
   return(
-    <>
-    <h1 style={{color:'red'}}>{title},{project}</h1>
-    </>
+    <div className='ui centered card'>
+      <div className='content'>
+        <div className='header'>
+          {title}
+        </div>
+        <div className='meta'>
+          {project}
+        </div>
+        <div className='center aligned description'>
+          <h2>
+            {elapsedString}
+          </h2>
+        </div>
+        <div className='extracontent'>
+          <span className='right floated edit icon'>
+            <i className='trash icon'/>
+          </span>
+        </div>
+      </div>
+    </div>
   )
 }
 
