@@ -44,16 +44,21 @@ export default function TimerDashboard () {
     }))
   }
   const handleStart=(id)=>{
-    timers.map((timer)=>{
-      if(timer.id ===id){
-        return{...timer,runningSince:Date.now()}
+    const now = Date.now();
+    setTimers(prevTimers=>prevTimers.map((t)=>{
+      if(t.id ===id){
+        console.log(t.runningSince+"start")
+        return{...t,runningSince:now}
       }else{
-        return timer;
+        return t;
       }
-    });
-    console.log(id+"start")
+    })
+    )
+    
   }
   const handleStop=(id)=>{
+    const now = Date.now();
+    
     console.log(id+"stop")
   }
 
@@ -133,24 +138,19 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
 
 const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStart,handleStop})=>{
   const [displayTime,setDisplayTime] = useState(renderElapsedString(elapsed,runningSince));
-  const isRunning =false;
   const onStart=()=>{
     handleStart(id);
-    isRunning =true;
   }
   const onStop = ()=>{
     handleStop(id);
-    isRunning =false;
   }
 
   useEffect(()=>{
-    if(isRunning){
-      const intervalId = setInterval(()=>{
-        setDisplayTime(renderElapsedString(elapsed,runningSince));
-      },50);
-      return ()=>clearInterval(intervalId);
-    }
-  },[isRunning]);
+    const intervalId = setInterval(()=>{
+      setDisplayTime(renderElapsedString(elapsed,runningSince));
+    },50);
+    return ()=>clearInterval(intervalId);
+  },[elapsed,runningSince]);
   
   return(
     <div className='ui centered card'>
