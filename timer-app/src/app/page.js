@@ -47,18 +47,21 @@ export default function TimerDashboard () {
     const now = Date.now();
     setTimers(prevTimers=>prevTimers.map((t)=>{
       if(t.id ===id){
-        console.log(t.runningSince+"start")
         return{...t,runningSince:now}
       }else{
         return t;
       }
     })
     )
-    
   }
   const handleStop=(id)=>{
     const now = Date.now();
-    
+    setTimers(prevTimers=>prevTimers.map((t)=>{
+      if(t.id===id){
+        const lastElapsed = now-t.runningSince;
+        return {...t,elapsed:t.elapsed+lastElapsed,runningSince:null,}
+      }else{return t}
+    }))
     console.log(id+"stop")
   }
 
@@ -148,7 +151,7 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStar
   useEffect(()=>{
     const intervalId = setInterval(()=>{
       setDisplayTime(renderElapsedString(elapsed,runningSince));
-    },50);
+    },100);
     return ()=>clearInterval(intervalId);
   },[elapsed,runningSince]);
   
@@ -175,22 +178,19 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStar
           </span>
         </div>
       </div>
-      <StartButton handleStart={onStart} handleStop={onStop}/>
+      <StartButton handleStart={onStart} handleStop={onStop} timerIsRunning = {!!runningSince}/>
     </div>
   )
 }
 
-const StartButton = ({handleStart, handleStop})=>{
-  const [sp,setSp] = useState(true);
+const StartButton = ({handleStart, handleStop,timerIsRunning})=>{
   const onStart=()=>{
     handleStart();
-    setSp(false);
   };
   const onStop=()=>{
     handleStop();
-    setSp(true);
   };
-  if (sp){
+  if (!timerIsRunning){
     return <div className = 'ui bottom attached blue basic button' onClick={onStart}>
       Start
     </div>
