@@ -1,9 +1,11 @@
+'use client'
+
 import { v4 as uuidv4 } from 'uuid';
 import { newTimer, findById, renderElapsedString } from './helpers.js';
 import 'semantic-ui-css/semantic.min.css';
+import React, { useState } from 'react';
 
-
-const timers=[
+const initialTimers=[
   {
     title:'Practice squat',
     project:'Gym Chores',
@@ -23,10 +25,11 @@ const timers=[
 ]
 
 export default function TimerDashboard () {
+  const [timers,setTimers] = useState(initialTimers);
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer createOpen={false}/>
+    <ToggleableTimer createOpen={true}/>
     </div>
   )
 }
@@ -45,7 +48,9 @@ const EditableTimerList=({timers})=>{
 }
 
 const EditableTimer=({title,project,id,elapsed,runningSince,editOpen})=>{
-  if (editOpen===true){
+  const [isEdit,setIsEdit] = useState(editOpen);
+
+  if (isEdit===true){
     return(
       <Timer 
       title={title}
@@ -128,8 +133,9 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
 }
 
 const ToggleableTimer=({createOpen})=>{
+  const [isCreate, setIsCreat] = useState(createOpen);
  
-  if(createOpen){
+  if(isCreate){
     return(<TimerForm/>)
   }else{
     return(
