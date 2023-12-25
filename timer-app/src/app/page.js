@@ -26,7 +26,7 @@ export default function TimerDashboard () {
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer isCreate={true}/>
+    <ToggleableTimer createOpen={true}/>
     </div>
   )
 }
@@ -36,12 +36,7 @@ const EditableTimerList=({timers})=>{
     <div>
     {timers.map((timer)=>(
       <EditableTimer
-        title={timer.title}
-        project={timer.project}
-        id={timer.id}
-        elapsed={timer.elapsed}
-        runningSince={timer.runningSince}
-        editOpen={timer.editOpen}
+        {...timer}
       />
     ))}
     
@@ -132,9 +127,9 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
   )
 }
 
-const ToggleableTimer=({isCreate})=>{
+const ToggleableTimer=({createOpen})=>{
  
-  if(isCreate){
+  if(createOpen){
     return(<TimerForm/>)
   }else{
     return(
