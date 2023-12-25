@@ -44,21 +44,26 @@ export default function TimerDashboard () {
     }))
   }
 
+  const handleDelete=(id)=>{
+    setTimers(prevTimers => prevTimers.filter(t => t.id !== id));
+  }
+
   return(
     <div>
-    <EditableTimerList timers={timers} onFormUpdate={handleUpdate}/>
+    <EditableTimerList timers={timers} onFormUpdate={handleUpdate} toDelete={handleDelete}/>
     <ToggleableTimer createOpen={false} handleSubmit = {isSubmit}/>
     </div>
   )
 }
 
-const EditableTimerList=({timers,onFormUpdate})=>{
+const EditableTimerList=({timers,onFormUpdate,toDelete})=>{
   return(
     <div>
     {timers.map((timer)=>(
       <EditableTimer
         {...timer}
         handleUpdate = {onFormUpdate}
+        toDelete ={toDelete}
       />
     ))}
     
@@ -66,7 +71,7 @@ const EditableTimerList=({timers,onFormUpdate})=>{
   )
 }
 
-const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handleUpdate})=>{
+const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handleUpdate,toDelete})=>{
   const [isEdit,setIsEdit] = useState(editOpen);
 
   const handleEdit =()=>{
@@ -79,6 +84,9 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
     handleUpdate(timer)
     closeForm();
   }
+  const handleDelete = (id)=>{
+    toDelete(id);
+  }
 
   if (isEdit===true){
     return(
@@ -89,6 +97,7 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
       elapsed={elapsed}
       runningSince={runningSince}
       isOnEdit = {handleEdit}
+      toDelete = {handleDelete}
       />
     )
   }else return(
@@ -105,7 +114,7 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
   
 }
 
-const Timer=({title,project,id,elapsed,runningSince,isOnEdit})=>{
+const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete})=>{
   const elapsedString = renderElapsedString(elapsed);
   return(
     <div className='ui centered card'>
@@ -126,7 +135,7 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit})=>{
             <i className='edit icon' onClick={isOnEdit}/>
           </span>
           <span className='right floated trash icon'>
-            <i className='trash icon'/>
+            <i className='trash icon' onClick = {()=>toDelete(id)}/>
           </span>
         </div>
       </div>
