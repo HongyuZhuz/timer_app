@@ -35,6 +35,7 @@ export default function TimerDashboard () {
     console.log(t)
     setTimers(prevTimers=>([...prevTimers,t]))
   }
+
   return(
     <div>
     <EditableTimerList timers={timers}/>
@@ -113,7 +114,7 @@ const Timer=({title,project,id,elapsed,runningSince})=>{
   )
 }
 
-const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,closeForm})=>{
+const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,onFormClose})=>{
   const [timer,setTimer] = useState({
     title:title,
     project:project
@@ -124,7 +125,7 @@ const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,closeForm})
   const handleProjectChange =(event)=>{
     setTimer(prevTimer=>({...prevTimer,project:event.target.value}))
   }
-  const isSubmit=(timer)=>{
+  const onFormSubmit=()=>{
     handleSubmit(timer);
   }
   
@@ -142,10 +143,10 @@ const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,closeForm})
             <input type = 'text' value = {timer.project} onChange={handleProjectChange}/>
           </div>
           <div className = 'ui two bottom attached buttons'>
-            <button className = 'ui basic blue button' onClick={()=>isSubmit(timer)}>
+            <button className = 'ui basic blue button' onClick={onFormSubmit}>
               {submitText}
             </button>
-            <button className = 'ui basic red button' onClick = {()=>closeForm()}>
+            <button className = 'ui basic red button' onClick = {onFormClose}>
               Cancel
             </button>
           </div>
@@ -169,7 +170,7 @@ const ToggleableTimer=({createOpen,handleSubmit})=>{
   }
  
   if(isCreate){
-    return(<TimerForm handleSubmit={isSubmit} closeForm = {closeForm}/>)
+    return(<TimerForm handleSubmit={isSubmit} onFormClose = {closeForm}/>)
   }else{
     return(
       <div className = 'ui basic content center aligned segment'>
