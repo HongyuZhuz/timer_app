@@ -26,10 +26,19 @@ const initialTimers=[
 
 export default function TimerDashboard () {
   const [timers,setTimers] = useState(initialTimers);
+
+  const isSubmit = (timer)=>{
+    createTimer(timer);
+  }
+  const createTimer =(timer)=>{
+    const t= newTimer(timer);
+    console.log(t)
+    setTimers(prevTimers=>([...prevTimers,t]))
+  }
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer createOpen={false}/>
+    <ToggleableTimer createOpen={false} handleSubmit = {isSubmit}/>
     </div>
   )
 }
@@ -47,7 +56,7 @@ const EditableTimerList=({timers})=>{
   )
 }
 
-const EditableTimer=({title,project,id,elapsed,runningSince,editOpen})=>{
+const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true})=>{
   const [isEdit,setIsEdit] = useState(editOpen);
 
   if (isEdit===true){
@@ -104,16 +113,19 @@ const Timer=({title,project,id,elapsed,runningSince})=>{
   )
 }
 
-const TimerForm=({title,project,id,elapsed,runningSince})=>{
+const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,closeForm})=>{
   const [timer,setTimer] = useState({
     title:title,
     project:project
   })
   const handleTitleChange =(event)=>{
-    setTimer({title:event.target.value});
+    setTimer(prevTimer=>({...prevTimer,title:event.target.value}));
   }
   const handleProjectChange =(event)=>{
-    setTimer({project:event.target.value})
+    setTimer(prevTimer=>({...prevTimer,project:event.target.value}))
+  }
+  const isSubmit=(timer)=>{
+    handleSubmit(timer);
   }
   
   const submitText = title? 'Update':'Create'
@@ -123,19 +135,17 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
         <div className='ui form'>
           <div className = 'field'>
             <label>Title</label>
-            <input type = 'text' defaultValue = {title} onChange={handleTitleChange}/>
-            <h2>{timer.title}</h2>
+            <input type = 'text' value = {timer.title} onChange={handleTitleChange}/>
           </div>
           <div className = 'field'>
             <label>Project</label>
-            <input type = 'text' defaultValue = {project} onChange={handleProjectChange}/>
-            <h2>{timer.project}</h2>
+            <input type = 'text' value = {timer.project} onChange={handleProjectChange}/>
           </div>
           <div className = 'ui two bottom attached buttons'>
-            <button className = 'ui basic blue button'>
+            <button className = 'ui basic blue button' onClick={()=>isSubmit(timer)}>
               {submitText}
             </button>
-            <button className = 'ui basic red button'>
+            <button className = 'ui basic red button' onClick = {()=>closeForm()}>
               Cancel
             </button>
           </div>
@@ -145,18 +155,25 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
   )
 }
 
-const ToggleableTimer=({createOpen})=>{
+const ToggleableTimer=({createOpen,handleSubmit})=>{
   const [isCreate, setIsCreat] = useState(createOpen);
-  const handleCreate =()=>{
+  const openForm =()=>{
     setIsCreat(true)
+  }
+  const isSubmit = (timer)=>{
+    handleSubmit(timer);
+    closeForm();
+  }
+  const closeForm = () =>{
+    setIsCreat(false)
   }
  
   if(isCreate){
-    return(<TimerForm/>)
+    return(<TimerForm handleSubmit={isSubmit} closeForm = {closeForm}/>)
   }else{
     return(
       <div className = 'ui basic content center aligned segment'>
-        <button className = 'ui basic button icon' onClick={handleCreate}>
+        <button className = 'ui basic button icon' onClick={openForm}>
           <i className = 'plus icon' />
         </button>
       </div>
