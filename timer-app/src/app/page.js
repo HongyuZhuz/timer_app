@@ -60,6 +60,13 @@ const EditableTimerList=({timers})=>{
 const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true})=>{
   const [isEdit,setIsEdit] = useState(editOpen);
 
+  const handleEdit =()=>{
+    setIsEdit(false);
+  }
+  const handleCancel = ()=>{
+    setIsEdit(true);
+  }
+
   if (isEdit===true){
     return(
       <Timer 
@@ -68,6 +75,7 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true})=>{
       id={id}
       elapsed={elapsed}
       runningSince={runningSince}
+      isOnEdit = {handleEdit}
       />
     )
   }else return(
@@ -77,12 +85,13 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true})=>{
       id={id}
       elapsed={elapsed}
       runningSince={runningSince}
+      onFormClose = {handleCancel}
     />
   )
   
 }
 
-const Timer=({title,project,id,elapsed,runningSince})=>{
+const Timer=({title,project,id,elapsed,runningSince,isOnEdit})=>{
   const elapsedString = renderElapsedString(elapsed);
   return(
     <div className='ui centered card'>
@@ -100,7 +109,7 @@ const Timer=({title,project,id,elapsed,runningSince})=>{
         </div>
         <div className='extracontent'>
           <span className='right floated edit icon'>
-            <i className='edit icon'/>
+            <i className='edit icon' onClick={isOnEdit}/>
           </span>
           <span className='right floated trash icon'>
             <i className='trash icon'/>
