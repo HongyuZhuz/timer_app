@@ -139,11 +139,30 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete})=>{
           </span>
         </div>
       </div>
-      <div className = 'ui bottom attached blue basic button'>
-        Start
-      </div>
+      <StartButton sp/>
+      
     </div>
   )
+}
+
+const StartButton = ()=>{
+  const [sp,setSp] = useState(true);
+  const handleStart=()=>{
+    setSp(false);
+  };
+  const handleStop=()=>{
+    setSp(true);
+  };
+  if (sp){
+    return <div className = 'ui bottom attached blue basic button' onClick={handleStart}>
+      Start
+    </div>
+  }else {
+    return <div className = 'ui bottom attached red basic button' onClick = {handleStop}>
+      Stop
+    </div>
+  }
+
 }
 
 const TimerForm=({title,project,id,elapsed,runningSince,handleSubmit,onFormClose,handleUpdate})=>{
