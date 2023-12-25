@@ -26,7 +26,7 @@ export default function TimerDashboard () {
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer createOpen={true}/>
+    <ToggleableTimer createOpen={false}/>
     </div>
   )
 }
