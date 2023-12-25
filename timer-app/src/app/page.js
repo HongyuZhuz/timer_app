@@ -44,6 +44,13 @@ export default function TimerDashboard () {
     }))
   }
   const handleStart=(id)=>{
+    timers.map((timer)=>{
+      if(timer.id ===id){
+        return{...timer,runningSince:Date.now()}
+      }else{
+        return timer;
+      }
+    });
     console.log(id+"start")
   }
   const handleStop=(id)=>{
@@ -125,13 +132,26 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
 }
 
 const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStart,handleStop})=>{
-  const elapsedString = renderElapsedString(elapsed);
+  const [displayTime,setDisplayTime] = useState(renderElapsedString(elapsed,runningSince));
+  const isRunning =false;
   const onStart=()=>{
     handleStart(id);
+    isRunning =true;
   }
   const onStop = ()=>{
     handleStop(id);
+    isRunning =false;
   }
+
+  useEffect(()=>{
+    if(isRunning){
+      const intervalId = setInterval(()=>{
+        setDisplayTime(renderElapsedString(elapsed,runningSince));
+      },50);
+      return ()=>clearInterval(intervalId);
+    }
+  },[isRunning]);
+  
   return(
     <div className='ui centered card'>
       <div className='content'>
@@ -143,7 +163,7 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStar
         </div>
         <div className='center aligned description'>
           <h2>
-            {elapsedString}
+            {displayTime}
           </h2>
         </div>
         <div className='extracontent'>
