@@ -43,6 +43,12 @@ export default function TimerDashboard () {
       };
     }))
   }
+  const handleStart=(id)=>{
+    console.log(id+"start")
+  }
+  const handleStop=(id)=>{
+    console.log(id+"stop")
+  }
 
   const handleDelete=(id)=>{
     setTimers(prevTimers => prevTimers.filter(t => t.id !== id));
@@ -50,13 +56,13 @@ export default function TimerDashboard () {
 
   return(
     <div>
-    <EditableTimerList timers={timers} onFormUpdate={handleUpdate} toDelete={handleDelete}/>
+    <EditableTimerList timers={timers} onFormUpdate={handleUpdate} toDelete={handleDelete} handleStart={handleStart} handleStop={handleStop}/>
     <ToggleableTimer createOpen={false} handleSubmit = {isSubmit}/>
     </div>
   )
 }
 
-const EditableTimerList=({timers,onFormUpdate,toDelete})=>{
+const EditableTimerList=({timers,onFormUpdate,toDelete,handleStart,handleStop})=>{
   return(
     <div>
     {timers.map((timer)=>(
@@ -64,6 +70,8 @@ const EditableTimerList=({timers,onFormUpdate,toDelete})=>{
         {...timer}
         handleUpdate = {onFormUpdate}
         toDelete ={toDelete}
+        handleStart={handleStart}
+        handleStop = {handleStop}
       />
     ))}
     
@@ -71,7 +79,7 @@ const EditableTimerList=({timers,onFormUpdate,toDelete})=>{
   )
 }
 
-const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handleUpdate,toDelete})=>{
+const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handleUpdate,toDelete,handleStart,handleStop})=>{
   const [isEdit,setIsEdit] = useState(editOpen);
 
   const handleEdit =()=>{
@@ -98,6 +106,8 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
       runningSince={runningSince}
       isOnEdit = {handleEdit}
       toDelete = {handleDelete}
+      handleStart = {handleStart}
+      handleStop = {handleStop}
       />
     )
   }else return(
@@ -114,8 +124,14 @@ const EditableTimer=({title,project,id,elapsed,runningSince,editOpen=true,handle
   
 }
 
-const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete})=>{
+const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete,handleStart,handleStop})=>{
   const elapsedString = renderElapsedString(elapsed);
+  const onStart=()=>{
+    handleStart(id);
+  }
+  const onStop = ()=>{
+    handleStop(id);
+  }
   return(
     <div className='ui centered card'>
       <div className='content'>
@@ -139,26 +155,27 @@ const Timer=({title,project,id,elapsed,runningSince,isOnEdit,toDelete})=>{
           </span>
         </div>
       </div>
-      <StartButton sp/>
-      
+      <StartButton handleStart={onStart} handleStop={onStop}/>
     </div>
   )
 }
 
-const StartButton = ()=>{
+const StartButton = ({handleStart, handleStop})=>{
   const [sp,setSp] = useState(true);
-  const handleStart=()=>{
+  const onStart=()=>{
+    handleStart();
     setSp(false);
   };
-  const handleStop=()=>{
+  const onStop=()=>{
+    handleStop();
     setSp(true);
   };
   if (sp){
-    return <div className = 'ui bottom attached blue basic button' onClick={handleStart}>
+    return <div className = 'ui bottom attached blue basic button' onClick={onStart}>
       Start
     </div>
   }else {
-    return <div className = 'ui bottom attached red basic button' onClick = {handleStop}>
+    return <div className = 'ui bottom attached red basic button' onClick = {onStop}>
       Stop
     </div>
   }
