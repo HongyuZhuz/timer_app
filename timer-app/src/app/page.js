@@ -1,5 +1,3 @@
-import Image from 'next/image'
-import styles from './page.module.css'
 import { v4 as uuidv4 } from 'uuid';
 import { newTimer, findById, renderElapsedString } from './helpers.js';
 import 'semantic-ui-css/semantic.min.css';
@@ -28,7 +26,7 @@ export default function TimerDashboard () {
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer/>
+    <ToggleableTimer isCreate={true}/>
     </div>
   )
 }
@@ -52,7 +50,6 @@ const EditableTimerList=({timers})=>{
 }
 
 const EditableTimer=({title,project,id,elapsed,runningSince,editOpen})=>{
-  console.log(editOpen)
   if (editOpen===true){
     return(
       <Timer 
@@ -108,18 +105,44 @@ const Timer=({title,project,id,elapsed,runningSince})=>{
 }
 
 const TimerForm=({title,project,id,elapsed,runningSince})=>{
+  const submitText = title? 'Update':'Create'
   return(
-    <>
-    <h1>{title}</h1>
-    </>
+    <div className='ui centered card'>
+      <div className='content'>
+        <div className='ui form'>
+          <div className = 'field'>
+            <label>Title</label>
+            <input type = 'text' defaultValue = {title}/>
+          </div>
+          <div className = 'field'>
+            <label>Project</label>
+            <input type = 'text' defaultValue = {project}/>
+          </div>
+          <div className = 'ui two bottom attached buttons'>
+            <button className = 'ui basic blue button'>
+              {submitText}
+            </button>
+            <button className = 'ui basic red button'>
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
-const ToggleableTimer=()=>{
-  return(
-    <>
-    <h1>+</h1>
-    <TimerForm/>
-    </>
-  )
+const ToggleableTimer=({isCreate})=>{
+ 
+  if(isCreate){
+    return(<TimerForm/>)
+  }else{
+    return(
+      <div className = 'ui basic content center aligned segment'>
+        <button className = 'ui basic button icon'>
+          <i className = 'plus icon' />
+        </button>
+      </div>
+    )
+  }
 }
