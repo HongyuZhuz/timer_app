@@ -3,7 +3,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { newTimer, findById, renderElapsedString } from './helpers.js';
 import 'semantic-ui-css/semantic.min.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const initialTimers=[
   {
@@ -29,7 +29,7 @@ export default function TimerDashboard () {
   return(
     <div>
     <EditableTimerList timers={timers}/>
-    <ToggleableTimer createOpen={true}/>
+    <ToggleableTimer createOpen={false}/>
     </div>
   )
 }
@@ -105,6 +105,17 @@ const Timer=({title,project,id,elapsed,runningSince})=>{
 }
 
 const TimerForm=({title,project,id,elapsed,runningSince})=>{
+  const [timer,setTimer] = useState({
+    title:title,
+    project:project
+  })
+  const handleTitleChange =(event)=>{
+    setTimer({title:event.target.value});
+  }
+  const handleProjectChange =(event)=>{
+    setTimer({project:event.target.value})
+  }
+  
   const submitText = title? 'Update':'Create'
   return(
     <div className='ui centered card'>
@@ -112,11 +123,13 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
         <div className='ui form'>
           <div className = 'field'>
             <label>Title</label>
-            <input type = 'text' defaultValue = {title}/>
+            <input type = 'text' defaultValue = {title} onChange={handleTitleChange}/>
+            <h2>{timer.title}</h2>
           </div>
           <div className = 'field'>
             <label>Project</label>
-            <input type = 'text' defaultValue = {project}/>
+            <input type = 'text' defaultValue = {project} onChange={handleProjectChange}/>
+            <h2>{timer.project}</h2>
           </div>
           <div className = 'ui two bottom attached buttons'>
             <button className = 'ui basic blue button'>
@@ -134,13 +147,16 @@ const TimerForm=({title,project,id,elapsed,runningSince})=>{
 
 const ToggleableTimer=({createOpen})=>{
   const [isCreate, setIsCreat] = useState(createOpen);
+  const handleCreate =()=>{
+    setIsCreat(true)
+  }
  
   if(isCreate){
     return(<TimerForm/>)
   }else{
     return(
       <div className = 'ui basic content center aligned segment'>
-        <button className = 'ui basic button icon'>
+        <button className = 'ui basic button icon' onClick={handleCreate}>
           <i className = 'plus icon' />
         </button>
       </div>
